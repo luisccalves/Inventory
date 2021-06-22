@@ -11,7 +11,7 @@ st.set_page_config(page_title="Inventory Engine",
                    initial_sidebar_state="collapsed",
                    page_icon="😎")
 # Define the title of the application & the markdown
-st.title('Safety Stock & Re-order Level Calculator! ⚙️')
+st.title('Inventory Optimization Engine! ⚙️')
 st.write('Generates accurate Forecast, Safety stock, Reorder level & Economic order quantity. Play with the app by changing inputs, have fun🙂')
 
 # Define the tabs of the application
