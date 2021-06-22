@@ -56,7 +56,7 @@ if page == "Application":
     st.subheader('6. Inventory Percentage 🔧 ')
     InventoryPercentage= st.slider("It is the x% of item cost considered for inventory holding cost. Usually supply chain/operations managers defines this value", min_value=10, max_value=30,value=15, format="%g percent")
     st.subheader('7. Annual Demand  🔧 ')
-    AnnualDemand = st.number_input('Annual Demand of the item',min_value=1, max_value=100000,value=100 100)
+    AnnualDemand = st.number_input('Annual Demand of the item',min_value=1, max_value=100000,value=500)
 # Subheader
     #st.header('Recap Input Data')
     #col1,col2,col3,col4,col5,col6= st.beta_columns(6)
