@@ -48,15 +48,15 @@ if page == "Application":
     LT= pd.DataFrame({'LeadTime':[LeadTime]})
     SL= ServiceLevel
     st.subheader('4. Enter The Item Cost 🔧 ')
-    ItemCost = st.number_input('Item cost is amount paid per product during the purchase', 100)
+    ItemCost = st.number_input('Item cost is amount paid per product during the purchase',min_value=1, max_value=100000,value=100)
     st.subheader('5. Ordering Cost 🔧 ')
     with st.beta_expander("How to calculate ordering cost"):
         st.write("Ordering cost per item = ((Avg hours spent per order creation + follow up) * Man Hour Rate)/Number of products in the order.")
-    OrderingCost = st.number_input('Enter Ordering cost',100)
+    OrderingCost = st.number_input('Enter Ordering cost',min_value=1, max_value=100000,value=100)
     st.subheader('6. Inventory Percentage 🔧 ')
     InventoryPercentage= st.slider("It is the x% of item cost considered for inventory holding cost. Usually supply chain/operations managers defines this value", min_value=10, max_value=30,value=15, format="%g percent")
     st.subheader('7. Annual Demand  🔧 ')
-    AnnualDemand = st.number_input('Annual Demand of the item', 1000)
+    AnnualDemand = st.number_input('Annual Demand of the item',min_value=1, max_value=100000,value=100 100)
 # Subheader
     #st.header('Recap Input Data')
     #col1,col2,col3,col4,col5,col6= st.beta_columns(6)
