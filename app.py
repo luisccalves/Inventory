@@ -8,7 +8,7 @@ import xlrd
 
 # set the web page configuration
 st.set_page_config(page_title="Inventory Engine",
-                   initial_sidebar_state="open",
+                   initial_sidebar_state="expanded",
                    page_icon="😎")
 # Define the title of the application & the markdown
 st.title('Inventory Optimization Engine! ⚙️')
