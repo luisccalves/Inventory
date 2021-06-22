@@ -12,11 +12,11 @@ st.set_page_config(page_title="Inventory Engine",
                    page_icon="😎")
 # Define the title of the application & the markdown
 st.title('Safety Stock & Re-order Level Calculator! ⚙️')
-st.write('Generates accurate safety stock, reorder level in few simple steps!!')
+st.write('Generates accurate Forecast, Safety stock, Reorder level & Economic order quantity. Play with the app by changing inputs, have fun🙂')
 
 # Define the tabs of the application
 tabs = ["Application", "About"]
-page = st.sidebar.radio("Pages 🧾", tabs)
+page = st.sidebar.radio("Pages, feel free to close me for wider view 🧾", tabs)
 
 # write the content for the page Application
 if page == "Application":
@@ -42,20 +42,37 @@ if page == "Application":
     demand= pd.DataFrame(demand)
     demand.columns= ['Period','Demand']
     st.subheader('2. Enter Supplier Lead Time 🔧 ')
-    LeadTime = st.number_input('Caution:Demand & Lead time should be in same time frame. Example,If you have choosen weekly demand then the lead time should be in weeks.',1)
+    LeadTime = st.number_input('Caution:Demand & Lead time should be in same time frame. Example,If you have chosen weekly demand then the lead time should be in weeks.',1)
     st.subheader('3. Select Desired Service Level 🔧 ')
-    ServiceLevel = st.slider('Service level is the probability fulfilling the expected demand with on hand inventory during the lead time', 0.90, 0.95, 0.99)
+    ServiceLevel = st.slider('It is the probability of product is available to your customer',min_value=90.0, max_value=99.9,value=99.0,step=0.1, format="%g percent")
     LT= pd.DataFrame({'LeadTime':[LeadTime]})
     SL= ServiceLevel
+    st.subheader('4. Enter The Item Cost 🔧 ')
+    ItemCost = st.number_input('Item cost is amount paid per product during the purchase', 100)
+    st.subheader('5. Ordering Cost 🔧 ')
+    with st.beta_expander("How to calculate ordering cost"):
+        st.write("Ordering cost per item = ((Avg hours spent per order creation + follow up) * Man Hour Rate)/Number of products in the order.")
+    OrderingCost = st.number_input('Enter Ordering cost',100)
+    st.subheader('6. Inventory Percentage 🔧 ')
+    InventoryPercentage= st.slider("It is the x% of item cost considered for inventory holding cost. Usually supply chain/operations managers defines this value", min_value=10, max_value=30,value=15, format="%g percent")
+    st.subheader('7. Annual Demand  🔧 ')
+    AnnualDemand = st.number_input('Annual Demand of the item', 1000)
 # Subheader
-    st.header('Recap Input Data')
-    col1,col2, col3= st.beta_columns(3)
-    col1.subheader("Demand Input")
-    col1.write(demand)
-    col2.subheader("Supplier Lead Time")
-    col2.write(LT)
-    col3.subheader("Service Level")
-    col3.write(SL)
+    #st.header('Recap Input Data')
+    #col1,col2,col3,col4,col5,col6= st.beta_columns(6)
+    #col1.write("Demand Input")
+    #col1.write(demand)
+    #col2.write("Supplier Lead Time")
+    #col2.write(LT)
+    #col3.write("Service Level")
+    #col3.write(SL)
+    #col4.write("Item Cost")
+    #col4.write(ItemCost)
+    #col5.write("Ordering Cost")
+    #col5.write(OrderingCost)
+    #col6.write("Inventory Percentage")
+    #col6.write(InventoryPercentage)
+
 #Subheader
     demand['Period']= pd.to_datetime(demand['Period'])
     forecast_horizon=1
@@ -65,20 +82,33 @@ if page == "Application":
     forecast_demand= np.average(model.predict(testdata=1,model='best',simple=True))
     Lead_Time_Demand = forecast_demand*LeadTime
     Standard_Deviation = demand['Demand'].std()
-    Service_Factor = norm.ppf(SL)
+    SL1=SL/100 # divide SL% by 100 for the calculation
+    Service_Factor = norm.ppf(SL1)
     Lead_Time_Factor =np.sqrt(LeadTime)
-    Safety_Stock =  Standard_Deviation*Service_Factor*Lead_Time_Factor
+    Safety_Stock = Standard_Deviation*Service_Factor*Lead_Time_Factor
     Reorder_Point = Safety_Stock+Lead_Time_Demand
+    EOQ= np.sqrt((2*AnnualDemand*OrderingCost)/ItemCost*(InventoryPercentage/100))
     st.header('Forecast Generated Using AutoML')
     st.write("Forecasting model used", best_model[0:1])
+    st.write("Forecast for the next period", round(forecast_demand,2))
     st.header('We Are Done, Check The Result!')
-    st.write('Safety Stock is', round(Safety_Stock,2))
-    st.write('Reorder Point is', round(Reorder_Point,2))
+    st.subheader("Safety Stock :")
+    st.write(round(Safety_Stock,0))
+   #st.write('Safety Stock of,round(Safety_Stock,0) to avoid stock out' )
+    st.subheader("Reorder Level:")
+    st.write(round(Reorder_Point, 0))
+    #st.write('New purchase order for this product to be raised when stock reaches"=',round(Reorder_Point,0))
+    st.subheader("Economic Order Quantity:")
+    st.write(round(EOQ, 0))
+    #st.write('The optimum order quantity needs to be,round(EOQ, 0) while placing new order')
 
 if page == "About":
-    st.image("Inv1.jpg")
+    #st.image("Inv1.jpg")
     st.header("About")
     st.markdown("Official documentation of **[Streamlit](https://docs.streamlit.io/en/stable/getting_started.html)**")
+    st.markdown("Logic for the calculation of Safety stock & reorder level **[Link](https://www.lokad.com/calculate-safety-stocks-with-sales-forecasting)**")
+    st.markdown("Logic for the calculation of Economic order quantity **[Link](https://www.accountingformanagement.org/economic-order-quantity/)**")
+    st.markdown("Forecast package used **[Auto_TS](https://github.com/AutoViML/Auto_TS/blob/master/README.md/)**")
     st.write("Author:")
     st.markdown(""" **[Munikumar N.M](https://www.linkedin.com/in/munikumarnm/)**""")
     st.markdown("""**[Source code](https://github.com/Munikumarnm/streamlit)**""")
