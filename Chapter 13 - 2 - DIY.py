@@ -6,7 +6,7 @@ from scipy.stats import norm
 # STEP #1 - Demand data
 
 def get_data(car_maker):
-    df = pd.read_csv("/norway_new_car_sales_by_make.csv")
+    df = pd.read_csv("norway_new_car_sales_by_make.csv")
     df["Date"] = pd.to_datetime(df["Year"].astype(str)+df["Month"].astype(str),format="%Y%m")
     df = (df.loc[df["Make"] == car_maker,["Date","Quantity"]]
         .rename(columns={"Quantity":"Sales"}).set_index("Date"))
